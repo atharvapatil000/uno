@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>17th sept</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --envelope-color: #f7cad0;
+            --envelope-flap-color: #f2b5bb;
+            --letter-paper-color: #fefae0;
+            --letter-paper-back-color: #eaddc7; 
+            --heart-color: #c9184a;
+            --text-color: #8c2f39;
+            --shadow-color: rgba(140, 47, 57, 0.2);
+            --handwriting-font: 'Caveat', cursive;
+            --realistic-ease: cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            perspective: 2000px;
+        }
+
+        .envelope {
+            position: relative;
+            width: 400px;
+            height: 250px;
+            background-color: var(--envelope-color);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            z-index: 2; 
+        }
+        
+        .flap {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 200px solid transparent;
+            border-right: 200px solid transparent;
+            border-top: 130px solid var(--envelope-flap-color);
+            top: 0;
+            left: 0;
+            transform-origin: top center;
+            transition: transform 0.6s var(--realistic-ease);
+            z-index: 5;
+        }
+        
+        .heart {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 30px;
+            color: var(--heart-color);
+            z-index: 6;
+            transition: opacity 0.4s var(--realistic-ease), transform 0.4s var(--realistic-ease);
+        }
+        
+        .letter {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 380px;
+            height: 80px;
+            z-index: 1; 
+            transform-style: preserve-3d;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: transform 0.6s var(--realistic-ease) 0.3s, 
+                        opacity 0.6s var(--realistic-ease) 0.3s, 
+                        height 0.6s var(--realistic-ease), 
+                        z-index 0.6s var(--realistic-ease);
+        }
+        
+        .fold {
+            width: 100%;
+            height: 80px;
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform 0.6s var(--realistic-ease);
+            z-index: 1; 
+        }
+        
+        .fold::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.6s var(--realistic-ease);
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .fold-face {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .front {
+            background-color: var(--letter-paper-color);
+        }
+        
+        .back {
+            background-color: var(--letter-paper-back-color);
+            transform: rotateX(180deg);
+        }
+
+        .top-fold {
+            top: 0;
+            transform-origin: bottom center;
+            z-index: 3;
+        }
+
+        .middle-fold {
+            top: 80px;
+            transform-origin: top center;
+            transform: rotateX(180deg);
+            z-index: 2;
+        }
+
+        .bottom-fold {
+            top: 160px;
+            transform-origin: top center;
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+        
+        .fold p {
+            font-family: var(--handwriting-font);
+            font-size: 28px;
+            color: var(--text-color);
+            margin: 0;
+        }
+        
+        .envelope-wrapper.open .flap { transform: rotateX(180deg); }
+        .envelope-wrapper.open .heart { opacity: 0; transform: translateX(-50%) translateY(-30px); }
+        .envelope-wrapper.open .letter {
+            opacity: 1;
+            transform: translateY(-90px);
+            z-index: 3;
+            transition-delay: 0.4s;
+        }
+
+        .letter.unfold-1 { height: 160px; }
+        .letter.unfold-1 .middle-fold { transform: rotateX(0deg); }
+        .letter.unfold-1 .top-fold::before { opacity: 1; }
+        
+        .letter.unfold-2 { height: 240px; }
+        .letter.unfold-2 .bottom-fold { transform: rotateX(0deg); }
+        .letter.unfold-2 .middle-fold::before { opacity: 1; } 
+    </style>
+</head>
+<body>
+
+    <div class="envelope-wrapper" id="envelopeWrapper">
+        <div class="heart">❤️</div>
+        
+        <div class="letter" id="letter">
+            <div class="fold top-fold">
+                <div class="fold-face front"><p>September 17th...</p></div>
+                <div class="fold-face back"></div>
+            </div>
+            <div class="fold middle-fold">
+                <div class="fold-face front"><p>...used to be just a date.</p></div>
+                <div class="fold-face back"></div>
+            </div>
+            <div class="fold bottom-fold">
+                <div class="fold-face front"><p>Now, it's our beginning.</p></div>
+                <div class="fold-face back"></div>
+            </div>
+        </div>
+
+        <div class="envelope">
+            <div class="flap"></div>
+        </div>
+    </div>
+
+    <script>
+        const envelopeWrapper = document.getElementById('envelopeWrapper');
+        const letter = document.getElementById('letter');
+        let foldState = 0;
+
+        envelopeWrapper.addEventListener('click', () => {
+            if (envelopeWrapper.classList.contains('open')) {
+                envelopeWrapper.classList.remove('open');
+                letter.classList.remove('unfold-1', 'unfold-2');
+                foldState = 0;
+            } else {
+                envelopeWrapper.classList.add('open');
+            }
+        });
+
+        letter.addEventListener('click', (event) => {
+            event.stopPropagation();
+            
+            if (envelopeWrapper.classList.contains('open')) {
+                switch (foldState) {
+                    case 0:
+                        letter.classList.add('unfold-1');
+                        foldState = 1;
+                        break;
+                    case 1:
+                        letter.classList.add('unfold-2');
+                        foldState = 2;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
